@@ -1,0 +1,373 @@
+﻿@model VoteNaija.Models.ManageModel
+<h2>Administrator</h2>
+<p>You're logged in as <strong>@User.Identity.Name</strong>.</p>
+
+@if (User.IsInRole("Admin") | User.Identity.Name == "jjmonebi") { 
+<div id="settings">
+    <ul>
+        <li>
+            <a href="#articles">Post Articles</a>
+        </li>
+        <li>
+            <a href="#vote">Post Vote</a>
+        </li>
+        <li>
+            <a href="#group">Add Group</a>
+        </li>
+        <li>
+            <a href="#deletecontent">Delete Content</a>
+        </li>
+        <li>
+            <a href="#deletegroup">Delete Group</a>
+        </li>
+        @if (User.Identity.Name == "jjmonebi") 
+        { 
+        <li>
+            <a href="#addtorole">Assign Role</a>
+        </li>
+        <li>
+            <a href="#removefromrole">Remove Role</a>
+        </li>
+        <li>
+            <a href="#deleteuser">Delete User</a>
+        </li>
+        }
+    </ul>
+    <div id="articles">
+        @using (Html.BeginForm("PostArticles","Vote", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+            <fieldset>
+                <legend>MessageModel</legend>
+                <div>
+                    @Html.LabelFor(m => m.Title, new { @id = "styledtext"})
+                    @Html.TextBoxFor(m => m.Title, new { @id = "styledbox"})
+                    @Html.ValidationMessageFor(m => m.Title, "", new { @id = "styledtext" })
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.Author, new { @id = "styledtext" })
+                    @Html.TextBoxFor(m => m.Author, new { @id = "styledbox" })
+                    @Html.ValidationMessageFor(m => m.Author, "", new { @id = "styledtext" })
+                </div>
+                <div>
+                    @Html.DropDownListFor(m => m.groupName, new SelectList(ViewBag.groups),new { @id="groupName"})
+                </div>
+                <div>
+                    @Html.DropDownListFor(m => m.subGroupName, Enumerable.Empty<SelectListItem>(), new { @id="subGroupName"})
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.Summary, new { @id = "styledtext" })
+                    @Html.TextAreaFor(m => m.Summary, new { @id = "styled" })
+                    @Html.ValidationMessageFor(m => m.Summary, "", new { @id = "styledtext" })
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.Content, new { @id = "styledtext" })
+                    @Html.TextAreaFor(m => m.Content, new { @id = "styled" })
+                    @Html.ValidationMessageFor(m => m.Content, "", new { @id = "styledtext" })
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.File, new { @id = "styledtext" })
+                    @Html.FileFor(m => m.File, new { @id = "styledtext" })
+                    @Html.ValidationMessageFor(m => m.File, "", new { @id = "styledtext" })
+                </div>
+                <p>
+                    <input type="submit" value="Send Message" class="styledbox"/>
+                </p>
+            </fieldset>
+        }
+        
+    </div>
+
+    <div id="vote">
+        @using (Html.BeginForm("PostVoteSections", "Vote", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true)
+            <fieldset>
+                <legend>MessageModel</legend>
+                <div>
+                    @Html.LabelFor(m => m.Title, new { @id = "styledtext" })
+                    @Html.TextBoxFor(m => m.Title, new { @id = "styledbox" })
+                    @Html.ValidationMessageFor(m => m.Title, "", new { @id = "styledtext" })
+                </div>
+                <div>
+                    @Html.LabelFor(m => m.Days, new { @id = "styledtext" })
+                    @Html.TextBoxFor(m => m.Days, new { type = "number", @id = "styledbox"})
+                    @Html.ValidationMessageFor(m => m.Days, "", new { @id = "styledtext" })
+                </div>
+                <div>
+                    @Html.DropDownListFor(m => m.groupName, new SelectList(ViewBag.groups), new { @id = "groupName1" })
+                </div>
+                <div>
+                    @Html.DropDownListFor(m => m.subGroupName, Enumerable.Empty<SelectListItem>(), new { @id = "subGroupName1" })
+                </div>
+                <div id="editorRows">
+                    @{
+                        var item = new VoteNaija.Models.VotingModel();
+                        Html.RenderPartial("_VotingSection", item);
+                     }
+                </div>
+                 @Html.ActionLink("Add another vote section", "BlankEditorRow", null, new { @id = "addItem" });
+                <p>
+                    <input type="submit" value="Send Message" class="styledbox" />
+                </p>
+            </fieldset>
+        }
+
+    </div>
+
+    <div id="group">
+        @using (Ajax.BeginForm("AddGroup", "Vote", null, (new AjaxOptions
+                {
+                    HttpMethod = "Post",
+                    InsertionMode = InsertionMode.Replace,
+                    LoadingElementId = "loadinggroup",
+                    UpdateTargetId = "group"
+                }))) 
+                { 
+                <fieldset>
+                    <div>
+                        @Html.DropDownListFor(m => m.groupName, new SelectList(ViewBag.groups))
+                    </div>
+                    <div>
+                        @Html.LabelFor(m => m.subGroupName, new { @id = "styledtext" })
+                        @Html.TextBoxFor(m => m.subGroupName, new { @id = "styledbox"})
+                        @Html.ValidationMessageFor(m => m.subGroupName, "", new { @id = "styledtext" })
+                    </div>
+                    <p>
+                        <input type="submit" value="Add Group" class="styledbox"/>
+                    </p>
+                </fieldset>
+                }
+    </div>
+
+    <div id="loadinggroup" style="display:none">
+        Adding Group...
+    </div>
+
+    <div id="deletecontent">
+        @using (Ajax.BeginForm("DeleteContent", "Vote", null, (new AjaxOptions
+                {
+                    HttpMethod = "Post",
+                    InsertionMode = InsertionMode.Replace,
+                    LoadingElementId = "loadingcontentdelete",
+                    UpdateTargetId = "deletecontent"
+                })))
+        {
+            <fieldset>
+                <div>
+                    @Html.DropDownListFor(m => m.groupName, new SelectList(ViewBag.groups), new { @id = "groupName2" })
+                </div>
+                <div>
+                    @Html.DropDownListFor(m => m.subGroupName, Enumerable.Empty<SelectListItem>(), new { @id = "subGroupName2" })
+                </div>
+                <div>
+                    @Html.DropDownListFor(m => m.Title, Enumerable.Empty<SelectListItem>(), new { @id = "title" })
+                </div>
+                <p>
+                    <input type="submit" value="Delete" class="styledbox"/>
+                </p>
+            </fieldset>
+        }
+    </div>
+
+    <div id="loadingcontentdelete" style="display:none">
+        deleting content...
+    </div>
+
+    <div id="deletegroup">
+        @using (Ajax.BeginForm("DeleteGroup", "Vote", null, (new AjaxOptions
+                {
+                    HttpMethod = "Post",
+                    InsertionMode = InsertionMode.Replace,
+                    LoadingElementId = "loadinggroupdelete",
+                    UpdateTargetId = "deletegroup"
+                })))
+        {
+            <fieldset>
+                <div>
+                    @Html.DropDownListFor(m => m.groupName, new SelectList(ViewBag.groups), new { @id = "groupName3" })
+                </div>
+                <div>
+                    @Html.DropDownListFor(m => m.subGroupName, Enumerable.Empty<SelectListItem>(), new { @id = "subGroupName3" })
+                </div>
+                <p>
+                    <input type="submit" value="Delete" class="styledbox"/>
+                </p>
+            </fieldset>
+        }
+    </div>
+
+    <div id="loadinggroupdelete" style="display:none">
+        deleting group...
+    </div>
+
+@if (User.Identity.Name == "jjmonebi")
+{ 
+    <div id="addtorole">
+        @using (Ajax.BeginForm("AddToRole", "Vote", null, (new AjaxOptions
+                {
+                    HttpMethod = "Post",
+                    InsertionMode = InsertionMode.Replace,
+                    LoadingElementId = "loadingaddtorole",
+                    UpdateTargetId = "addtorole"
+                })))
+        {
+            <fieldset>
+                <div>
+                    @Html.DropDownListFor(m => m.UserName, new SelectList(ViewBag.Users), new { @id = "styledtext"})
+                </div>
+                <div>
+                    @Html.DropDownListFor(m => m.Role, new SelectList(ViewBag.Roles), new { @id = "styledtext" })
+                </div>
+                <p>
+                    <input type="submit" value="Add to Role" class="styledbox"/>
+                </p>
+            </fieldset>
+        }
+    </div>
+
+    <div id="loadingaddtorole" style="display:none">
+        adding user to role...
+    </div>
+
+    <div id="removefromrole">
+        @using (Ajax.BeginForm("RemoveFromRole", "Vote", null, (new AjaxOptions
+                {
+                    HttpMethod = "Post",
+                    InsertionMode = InsertionMode.Replace,
+                    LoadingElementId = "loadingremovefromrole",
+                    UpdateTargetId = "removefromrole"
+                })))
+        {
+            <fieldset>
+                <div>
+                    @Html.DropDownListFor(m => m.UserName, new SelectList(ViewBag.Users), new { @id = "styledtext" })
+                </div>
+                <div>
+                    @Html.DropDownListFor(m => m.Role, new SelectList(ViewBag.Roles), new { @id = "styledtext" })
+                </div>
+                <p>
+                    <input type="submit" value="Remove from Role" class="styledbox"/>
+                </p>
+            </fieldset>
+        }
+    </div>
+
+    <div id="loadingremovefromrole" style="display:none">
+        adding user to role...
+    </div>
+
+    <div id="deleteuser">
+        @using (Ajax.BeginForm("DeleteUser", "Vote", null, (new AjaxOptions
+                {
+                    HttpMethod = "Post",
+                    InsertionMode = InsertionMode.Replace,
+                    LoadingElementId = "deletinguser",
+                    UpdateTargetId = "deleteuser"
+                })))
+        {
+            <fieldset>
+                <div>
+                    @Html.DropDownListFor(m => m.UserName, new SelectList(ViewBag.Users), new { @id = "styledtext" })
+                </div>
+                <p>
+                    <input type="submit" value="Delete User" class="styledbox" />
+                </p>
+            </fieldset>
+        }
+    </div>
+
+    <div id="deletinguser" style="display:none">
+        deleting user...
+    </div>
+}
+</div>
+}
+<script type="text/javascript">
+    $(function () {
+        $("#settings").tabs();
+    })
+</script>
+
+<script type="text/javascript">
+    $('#groupName').change(function () {
+        var selectedGroupName = $(this).val();
+        if (selectedGroupName != null && selectedGroupName != '') {
+            $.getJSON('@Url.Action("SubGroups","Vote")', { group: selectedGroupName }, function (subgroups) {
+                var subGroupSelect = $('#subGroupName');
+                subGroupSelect.empty();
+                $.each(subgroups, function (index, subGroup) {
+                    subGroupSelect.append($('<option/>').val(subGroup.value).text(subGroup.text));
+                });
+            });
+        }
+    });
+</script>
+<script type="text/javascript">
+    $('#groupName1').change(function () {
+        var selectedGroupName = $(this).val();
+        if (selectedGroupName != null && selectedGroupName != '') {
+            $.getJSON('@Url.Action("SubGroups","Vote")', { group: selectedGroupName }, function (subgroups) {
+                var subGroupSelect = $('#subGroupName1');
+                subGroupSelect.empty();
+                $.each(subgroups, function (index, subGroup) {
+                    subGroupSelect.append($('<option/>').val(subGroup.value).text(subGroup.text));
+                });
+            });
+        }
+    });
+</script>
+<script type="text/javascript">
+    $('#groupName2').change(function () {
+        var selectedGroupName = $(this).val();
+        if (selectedGroupName != null && selectedGroupName != '') {
+            $.getJSON('@Url.Action("SubGroups","Vote")', { group: selectedGroupName }, function (subgroups) {
+                var subGroupSelect = $('#subGroupName2');
+                subGroupSelect.empty();
+                $.each(subgroups, function (index, subGroup) {
+                    subGroupSelect.append($('<option/>').val(subGroup.value).text(subGroup.text));
+                });
+            });
+        }
+    });
+</script>
+<script type="text/javascript">
+    $('#subGroupName2').change(function () {
+        var selectedGroupName = $(this).val();
+        if (selectedGroupName != null && selectedGroupName != '') {
+            $.getJSON('@Url.Action("GetTitles","Vote")', { group: selectedGroupName }, function (subgroups) {
+                var subGroupSelect = $('#title');
+                subGroupSelect.empty();
+                $.each(subgroups, function (index, subGroup) {
+                    subGroupSelect.append($('<option/>').val(subGroup.value).text(subGroup.text));
+                });
+            });
+        }
+    });
+</script>
+<script type="text/javascript">
+    $('#groupName3').change(function () {
+        var selectedGroupName = $(this).val();
+        if (selectedGroupName != null && selectedGroupName != '') {
+            $.getJSON('@Url.Action("SubGroups","Vote")', { group: selectedGroupName }, function (subgroups) {
+                var subGroupSelect = $('#subGroupName3');
+                subGroupSelect.empty();
+                $.each(subgroups, function (index, subGroup) {
+                    subGroupSelect.append($('<option/>').val(subGroup.value).text(subGroup.text));
+                });
+            });
+        }
+    });
+</script>
+<script>
+    $("#addItem").click(function () {
+        $.ajax({
+            url: this.href,
+            cache: false,
+            success: function (html) { $("#editorRows").append(html); }
+        });
+        return false;
+    });
+</script>

@@ -1,0 +1,26 @@
+﻿@if (Request.IsAuthenticated) {
+    <text>
+    @{
+    if (User.IsInRole("Admin") | User.Identity.Name == "jjmonebi")
+        {
+        @:Hello, @Html.ActionLink(User.Identity.Name, "Manage", "Account", routeValues: null, htmlAttributes: new { @class = "username", title = "Manage" })
+    }
+        else
+        { 
+        @:Hello, @User.Identity.Name
+    }
+    }
+    
+        @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" })) {
+            @Html.AntiForgeryToken()
+            <a href="javascript:document.getElementById('logoutForm').submit()">Log off</a>
+        }
+    </text>
+    
+} 
+else 
+{
+    <ul>
+        <li>@Html.ActionLink("Log in with facebook", "ExternalLogin", "Account", routeValues: new { returnUrl = Url.Encode(Request.RawUrl)}, htmlAttributes: new { @class = "username" })</li>
+    </ul>
+}

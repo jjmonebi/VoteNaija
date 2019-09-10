@@ -1,0 +1,96 @@
+﻿@model VoteNaija.Models.ResultModel
+@section slider{
+    <div style="margin: 10px 0px 10px 127px;">
+        <script type="text/javascript">
+    (function () {
+        if (window.CHITIKA === undefined) { window.CHITIKA = { 'units': [] }; };
+        var unit = { "calltype": "async[2]", "publisher": "jjmonebi", "width": 728, "height": 90, "sid": "Chitika Default", "color_site_link": "347C17" };
+        var placement_id = window.CHITIKA.units.length;
+        window.CHITIKA.units.push(unit);
+        document.write('<div id="chitikaAdBlock-' + placement_id + '"></div>');
+    }());
+        </script>
+        <script type="text/javascript" src="//cdn.chitika.net/getads.js" async></script>
+</div>
+    }
+<section>
+    <h2>@ViewBag.Title</h2>
+    @using VoteNaija.Models
+    @{
+        if (Model.Contents != null)
+        {
+            foreach (var content in Model.Contents)
+            {
+                if (Model.voteGroup == "Vote" || VoteNaija.Models.ArticleManagement.CheckWhetherIsPoll(Model.groupId))
+                {
+                    List<VoteSection> list = new List<VoteSection>();
+                    int sum = 0;
+                    ArticleManagement.VoteResult(content.ContentID, out list, out sum);
+                    if (list != null)
+                    {
+                        <h3 style="font-family:Georgia,serif;
+	                        color:#4E443C;
+                            font-size: 20px;
+                            text-align:left;
+	                        font-variant: small-caps; text-transform: none; font-weight: 100; margin-bottom: 0;">@content.Title</h3>
+                        foreach (var voteSection in list)
+                        {
+                            var percentage = 0.0;
+                            if (sum > 0)
+                            { percentage = (Convert.ToDouble(voteSection.Votes) / Convert.ToDouble(sum)) * 450; }
+
+                            <div>
+                                @if (voteSection.ImageUrl != null)
+                                {
+                                    <div style="float:left">
+                                        <img src="~/Images/@voteSection.ImageUrl" class="img1" />
+                                    </div>
+                                }
+                                <div style="float:left">
+                                    <p>@voteSection.Section</p>
+                                    <div style="width:450px; background-color: #f3f3f3; border: 0; height: 18px; border-radius: 9px;">
+                                        <div style="width:@(percentage)px; background-color: #81BEF7; border: 0; height: 18px; border-radius: 9px;"></div>
+                                    </div>
+                                    <p>@((percentage / 450 * 100).ToString("#.#"))% (@voteSection.Votes Votes)</p>
+                                </div>
+                            </div>
+                            <br style="clear:both" />
+                        }
+                        <p>@Html.ActionLink("Vote/Comment", "Page", new { contentId = content.ContentID, groupId = content.GroupID }, new { @class = "button" })</p>
+                    }
+                }
+                else 
+                {
+                    <div>
+                        <div style="float:left">
+                                <h3 style="font-family:Georgia,serif;
+	                    color:#4E443C;
+                        font-size: 20px;
+                        text-align:left;
+	                    font-variant: small-caps; text-transform: none; font-weight: 100; margin-bottom: 0;">
+                                    <b>@content.Title</b>
+                                </h3>
+                                <p style="text-align:left;">by <b>@content.Authur</b> on <i><b>@string.Format("{0:f}",content.Date)</b></i></p>
+                                <p style="text-align:justify;">
+                                    @if (content.ImageUrl != null)
+                            {
+                                        <img src="~/Images/@content.ImageUrl" style="float:left" class="img2" />
+                            }@content.Summary
+                        </p>
+                        <p>@Html.ActionLink("Read More...", "Page", "Vote", new { contentId = content.ContentID, groupId = content.GroupID }, null)</p>
+                        </div>
+                    </div>
+                }
+                <br style="clear:both" />
+            }
+        }
+    }
+    @using (Html.BeginForm("Result","Vote", new { Page = Model.Page + 1, voteGroup = Model.voteGroup, groupId = Model.groupId }, FormMethod.Post))
+    {
+        <br />
+        <p>
+            <input type="submit" value="Show More" class="button" />
+        </p>
+    }
+    <br style="clear:both"/>
+</section>

@@ -1,0 +1,61 @@
+﻿@model VoteNaija.Models.PageModel
+@section slider{
+    <div style="margin: 10px 0px 10px 127px;">
+        <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+        <!-- LeaderBoard -->
+        <ins class="adsbygoogle"
+             style="display:inline-block;width:728px;height:90px"
+             data-ad-client="ca-pub-7993212765584076"
+             data-ad-slot="3644899547"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+    }
+<section>
+    <h2>@ViewBag.Message</h2>
+    <div class="fb-like"
+         data-share="true"
+         data-width="450"
+         data-show-faces="false">
+    </div>
+    <div>
+            @using VoteNaija.Models
+            @if (VoteNaija.Models.ArticleManagement.CheckWhetherIsPoll(Model.groupId))
+            {
+                <h3 style="font-family:Georgia,serif;
+	                    color:#4E443C;
+                        font-size: 20px;
+                        text-align:center;
+	                    font-variant: small-caps; text-transform: none; font-weight: 100; margin-bottom: 0;">
+                    <b>@Model.content.Title</b>
+                </h3>
+                @Html.Partial("VotingPage", new VoteNaija.Models.VoteModel { UserIds = Model.content.UserIDs.DeserializeList<int>(), voteSections = Model.voteSections, totalVotes = Model.totalVotes, groupId=Model.groupId, contentId = Model.content.ContentID, RemDays = Model.RemDays });
+                
+            }
+            else
+            {
+                <div>
+                    <h3 style="font-family:Georgia,serif;
+	                    color:#4E443C;
+                        font-size: 20px;
+                        text-align:center;
+	                    font-variant: small-caps; text-transform: none; font-weight: 100; margin-bottom: 0;"><b>@Model.content.Title</b></h3>
+                    <p style="text-align:center;">by <b>@Model.content.Authur</b> on <i><b>@string.Format("{0:f}", Model.content.Date)</b></i></p>
+                    <p style="text-align:justify;">@Model.content.Summary</p>
+                </div>
+        <p style="white-space:pre-line; text-align:justify;">
+            @if (Model.content.ImageUrl != null)
+            {
+                <img src="~/Images/@Model.content.ImageUrl" style="float:left" class="img3"/>
+            }
+                    @Html.Raw(Model.content.ContentResult)
+                </p>
+            }
+    </div>
+    <div>
+        <p>
+            <div class="fb-comments" data-href="@Request.Url" data-width="700px" data-numposts="5" data-colorscheme="light"></div>
+        </p>
+    </div>
+</section>

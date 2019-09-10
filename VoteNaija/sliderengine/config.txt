@@ -1,0 +1,4 @@
+Change of Animation
+Config.js
+col:5180 change to SlideIn
+col:6750 change to 300

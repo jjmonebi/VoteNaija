@@ -1,0 +1,3 @@
+ var data_validation = '{"fb-submit-button":{"hover":{"background-image":"url(common/images/btn_submit_hov.png)"}},"item4_email_1":{"email":true,"required":true,"messages":"Enter Valid Email Address"},"item5_text_1":{"required":true,"messages":"Enter your Username"},"item7_password_1":{"minlength":"6","required":true,"messages":"Enter your password of not less than 6 characters"}}';
+ var data_jsplugins = '[]';
+ var data_cssplugins = '["http://fonts.googleapis.com/css?family=Dancing+Script"]';

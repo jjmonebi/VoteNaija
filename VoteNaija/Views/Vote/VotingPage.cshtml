@@ -1,0 +1,67 @@
+﻿@model VoteNaija.Models.VoteModel
+<section>
+    @using (Html.BeginForm("VotingPage", "Vote", new { contentId = Model.contentId, groupId = Model.groupId }))
+    {
+        if (Model.voteSections != null)
+        {
+            foreach (var voteSection in Model.voteSections)
+            {
+                var percentage = 0.0;
+                if (Model.totalVotes > 0)
+                { percentage = (Convert.ToDouble(voteSection.Votes) / Convert.ToDouble(Model.totalVotes)) * 450; }
+                <div>
+                    @if (voteSection.ImageUrl != null)
+                    {
+                        <div style="float:left">
+                            <img src="~/Images/@voteSection.ImageUrl" alt="image1" class="img1" />
+                        </div>
+                    }
+                    <div style="float:left">
+                        <p><input type="radio" name="voteRadioButton" value="@voteSection.VoteSectionID" checked="checked" />@voteSection.Section</p>
+                        <div style="width:450px; background-color: #f3f3f3; border: 0; height: 18px; border-radius: 9px;">
+                            <div style="width:@(percentage)px; background-color: #81BEF7; border: 0; height: 18px; border-radius: 9px;"></div>
+                        </div>
+                        <p>@((percentage / 450 * 100).ToString("#.#"))% (@voteSection.Votes Votes)</p>
+                    </div>
+                </div>
+                <br style="clear:both" />
+            }
+        }
+        if (Model.RemDays > 0) 
+        {  
+            if (Model.UserIds != null)
+            {
+                if (Model.UserIds.Contains(WebSecurity.CurrentUserId))
+                {
+                    <p>"You have voted already"</p>
+                }
+                else if (WebSecurity.CurrentUserId == -1)
+                {
+                    <p>
+                        You need to log in to vote, @Html.ActionLink("Log in with facebook", "ExternalLogin", "Account", routeValues: new { returnUrl = Url.Encode(Request.RawUrl) }, htmlAttributes: new { @class = "username" })
+                    </p>
+                }
+                else
+                {
+                    <p style="margin-bottom:10px"><input type="submit" value="Vote" class="button" /></p>
+                }
+            }
+            else if (WebSecurity.CurrentUserId == -1)
+            {
+                <p>
+                    You need to log in to vote, @Html.ActionLink("Log in with facebook", "ExternalLogin", "Account", routeValues: new { returnUrl = Url.Encode(Request.RawUrl) }, htmlAttributes: new { @class = "username" })
+                </p>
+            }
+            else
+            {
+                <p style="margin-bottom:10px"><input type="submit" value="Vote" class="button" /></p>
+            }
+            <p><span>@Model.RemDays</span> days left</p>
+        }
+
+        else
+        {
+            <p style="float:right">Voting Closed!</p>
+        }
+    }
+</section>

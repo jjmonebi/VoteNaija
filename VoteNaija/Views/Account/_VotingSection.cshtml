@@ -1,0 +1,16 @@
+﻿@model VoteNaija.Models.VotingModel
+<div>
+    @using (Html.BeginCollectionItem("voteSections"))
+    {
+        <div>
+            @Html.LabelFor(m => m.voteTitle, new { @id = "styledtext" })
+            @Html.TextBoxFor(m => m.voteTitle, new { @id = "styledbox" })
+            @Html.ValidationMessageFor(m => m.voteTitle, "", new { @id = "styledtext" })
+        </div>
+        <div>
+            @Html.LabelFor(x => x.File, new { @id = "styledtext" })
+            @Html.FileFor(x => x.File, new { @id = "styledbox" })
+            @Html.ValidationMessageFor(x => x.File, "", new { @id = "styledtext" })
+        </div>
+    }
+</div>

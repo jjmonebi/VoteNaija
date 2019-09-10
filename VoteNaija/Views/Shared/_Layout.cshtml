@@ -1,0 +1,188 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>9jaVote</title>
+        <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/>
+        <meta property="fb:admins" content="jimex001@yahoo.com" />
+        @Styles.Render("~/Content/css")
+        @Styles.Render("~/Content/themes/base/css")
+        @Scripts.Render("~/bundles/jquery")
+        @Scripts.Render("~/bundles/jqueryui")
+        @Scripts.Render("~/bundles/jqueryval")
+        @Scripts.Render("~/bundles/modernizr")
+    </head>
+    <body style="background-image:url(/Images/backgd.jpg); background-repeat:no-repeat;">
+        <script>
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '1516870861897015',
+                xfbml: true,
+                version: 'v2.2'
+            });
+        };
+
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) { return; }
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+        </script>
+        <div id="fb-root"></div>
+        <script>
+            (function (d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = "//connect.facebook.net/en_GB/sdk.js#xfbml=1&appId=1516870861897015&version=v2.0";
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));
+        </script>
+
+            <div>
+                <img class="logo" src="~/Images/logo3.png" alt="logo" />
+            </div>
+
+            <div class="signup">
+                @Html.Partial("_LoginPartial")
+            </div>
+            <section>
+                <nav class="change">
+                    @using VoteNaija.Models
+                    <ul>
+                        <li>@Html.ActionLink("Home", "Home", "Vote")</li>
+                        <li>
+                            @Html.ActionLink("Vote", "GroupResult","Vote", new { voteGroup = "Vote" },null)
+                            <ul>
+                                @foreach (var x in ArticleManagement.GetGroups("Vote"))
+                                {
+                                    <li>@Html.ActionLink(x.SubGroupName, "SubGroupResult","Vote", new { voteGroup = x.SubGroupName, groupId = x.GroupID }, null)</li>
+                                }
+                            </ul>
+                        </li>
+                        <li>
+                            @Html.ActionLink("News", "GroupResult","Vote", new { voteGroup = "News" },null)
+                            <ul>
+                                @foreach (var x in ArticleManagement.GetGroups("News"))
+                                {
+                                    <li>@Html.ActionLink(x.SubGroupName, "SubGroupResult", "Vote", new { voteGroup = x.SubGroupName, groupId = x.GroupID }, null)</li>
+                                }
+                            </ul>
+                        </li>
+                        <li>
+                            @Html.ActionLink("Article", "GroupResult","Vote", new { voteGroup = "Article" },null)
+                            <ul>
+                                @foreach (var x in ArticleManagement.GetGroups("Article"))
+                                {
+                                    <li>@Html.ActionLink(x.SubGroupName, "SubGroupResult", "Vote", new { voteGroup = x.SubGroupName, groupId = x.GroupID }, null)</li>
+                                }
+                            </ul>
+                        </li>
+                    </ul>
+                </nav>
+            </section>
+
+        <div style="float:left;width:100%"></div>
+        <div style="float:left;">
+            @RenderSection("slider", false)
+        </div>
+            <div class="body">
+                @RenderBody()
+            </div>
+
+            <aside>
+                <p>
+                    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                    <!-- Side Bar -->
+                    <ins class="adsbygoogle"
+                         style="display:inline-block;width:336px;height:280px"
+                         data-ad-client="ca-pub-7993212765584076"
+                         data-ad-slot="9412231541"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
+                </p>
+                <p>
+                    @foreach (var x in ArticleManagement.GetGroups("Vote"))
+                    {
+                        <header>
+                            <h3 style="text-align:center; font-family:'Century Gothic'; font-weight:500; background-color:#81BEF7;">@x.SubGroupName</h3><br />
+                            @foreach (var y in ArticleManagement.ListSubGroupTitles(0, x.GroupID,5))
+                            {
+                                @Html.ActionLink(y.Title, "Page","Vote", new { contentId = y.ContentID, groupId = x.GroupID }, new { @id = "username" })<br /><br />
+                            }
+                        </header>
+                    }
+                </p>
+                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                <!-- Side Bar -->
+                <ins class="adsbygoogle"
+                     style="display:inline-block;width:336px;height:280px"
+                     data-ad-client="ca-pub-7993212765584076"
+                     data-ad-slot="9412231541"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </aside>
+        <div style="margin: 10px 0px 10px 127px;">
+            <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+            <!-- LeaderBoard -->
+            <ins class="adsbygoogle"
+                 style="display:inline-block;width:728px;height:90px"
+                 data-ad-client="ca-pub-7993212765584076"
+                 data-ad-slot="3644899547"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+        <footer>
+            <nav>
+                <ul>
+                    <li>
+                        @Html.ActionLink("Vote", "GroupResult", "Vote", new { voteGroup = "Vote" }, null)
+                        <ul class="try">
+                            @foreach (var x in ArticleManagement.GetGroups("Vote"))
+                            {
+                                <li>@Html.ActionLink(x.SubGroupName, "SubGroupResult", "Vote", new { voteGroup = x.SubGroupName, groupId = x.GroupID }, null)</li>
+                            }
+                        </ul>
+                    </li>
+                    <li>
+                        @Html.ActionLink("News", "GroupResult", "Vote", new { voteGroup = "News" }, null)
+                        <ul class="try">
+                            @foreach (var x in ArticleManagement.GetGroups("News"))
+                            {
+                                <li>@Html.ActionLink(x.SubGroupName, "SubGroupResult", "Vote", new { voteGroup = x.SubGroupName, groupId = x.GroupID }, null)</li>
+                            }
+                        </ul>
+                    </li>
+                    <li>
+                        @Html.ActionLink("Article", "GroupResult", "Vote", new { voteGroup = "Article" }, null)
+                        <ul class="try">
+                            @foreach (var x in ArticleManagement.GetGroups("Article"))
+                            {
+                                <li>@Html.ActionLink(x.SubGroupName, "SubGroupResult", "Vote", new { voteGroup = x.SubGroupName, groupId = x.GroupID }, null)</li>
+                            }
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </footer>
+        <img src="~/Images/Daddy.jpg" />
+        <div id="end">
+            <nav>
+                <ul>
+                    <li>@Html.ActionLink("Terms & Conditions", "TermsAndConditions", "Vote", null, null)</li>
+                    <li>@Html.ActionLink("Privacy Policy", "Policy", "Vote", null, null)</li>
+                    <li>@Html.ActionLink("Contact Us", "Contact", "Vote", null, null)</li>
+                    <li>&copy; @DateTime.Now.Year - 9jaVote</li>
+                </ul>
+            </nav>
+        </div>
+    </body>
+
+</html>
